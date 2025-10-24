@@ -1,11 +1,12 @@
-#canvas-handler{
+.canvas-handler{
 
     display: flex;
     justify-content: center;
+    flex-direction: column;
     align-items: center;
     padding: 30px;
     margin: 30px;
-
+    font-size:30px
 }
 
 #area{
@@ -166,18 +167,18 @@ img {
 }
 
 .main-submit{
-    background: #6200EE;
-    color: white;
-    padding: 2% 3%;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
-    box-shadow: 0 6px 20px rgba(98, 0, 238, 0.3);
-    display: block;
-    margin: 10% auto;
-    width: 30%;
+    background: #6200EE !important;
+    color: white !important;
+    padding: 2% 3% !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+    box-shadow: 0 6px 20px rgba(98, 0, 238, 0.3) !important;
+    display: block !important;
+    margin: 10% auto !important;
+    width: 30% !important;
 }
 
 .back-button {
@@ -200,45 +201,6 @@ img {
 }
 
 
-#resetButtonHandler{
-
-    display: flex;
-    justify-content: flex-end;
-
-}
-
-#reset{
-    padding: 10px 15px;
-    border: 2px solid #6200EE;
-    background: white;
-    color: #6200EE;
-    border-radius: 4px;
-    cursor: pointer;
-    font: 16px;
-}
-
-#main-error-handler{
-
-    display: block;
-    position: fixed;
-    justify-content: flex-end;
-    background: white;
-    border: 2px solid #6200EE;
-    border-radius: 10px;
-    top: 30%;
-    right: 3%;
-    width: 17%;
-    height: 8%;
-    color: #B00020;
-    font-size: 14px;
-    padding: 1px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 10px;
-    box-sizing: border-box;
-}
 
 
 .clock{
@@ -272,4 +234,15 @@ img {
     display: block;
     margin: 10% auto;
     width: 30%;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.radio-group label {
+    margin-right: 15px;
 }

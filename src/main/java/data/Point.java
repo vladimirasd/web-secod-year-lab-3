@@ -1,9 +1,9 @@
 package data;
-import jakarta.persistence.*;
+import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
 
 
 //ПРЕДУСЛОВИЯ БОГУ ПРЕДУСЛОВИЙ
@@ -12,27 +12,23 @@ import jakarta.validation.constraints.DecimalMin;
 @Table(name = "points")
 public class Point implements Serializable {
 
-    @DecimalMin(value = "-5", inclusive = false)
-    @DecimalMax(value = "3", inclusive = false)
-    @Column(name = "x")
+
+    @Column(name = "x", precision = 19, scale = 15)
     private BigDecimal x;
 
-    @DecimalMin(value = "-3", inclusive = false)
-    @DecimalMax(value = "5", inclusive = false)
-    @Column(name = "y")
+
+    @Column(name = "y", precision = 19, scale = 15)
     private BigDecimal y;
 
     @Column(name = "r")
     @DecimalMin(value = "0", inclusive = false)
-    @DecimalMax(value = "5", inclusive = false)
     private double r;
 
     @Column(name = "is_hit")
     private boolean isHit;
 
 
-    @DecimalMin(value = "0", inclusive = false)
-    @DecimalMax(value = "5", inclusive = false)
+    //@DecimalMin(value = "0", inclusive = false)
     @Column(name = "exec_time")
     private long execTime;
 
@@ -43,10 +39,10 @@ public class Point implements Serializable {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public BigDecimal getX() { return x; }
+    public BigDecimal getX() { return x.stripTrailingZeros(); }
     public void setX(BigDecimal x) { this.x = x; }
 
-    public BigDecimal getY() { return y; }
+    public BigDecimal getY() { return y.stripTrailingZeros(); }
     public void setY(BigDecimal y) { this.y = y; }
 
     public Double getR() { return r; }

@@ -1,122 +1,34 @@
 package data.beans;
-import data.Point;
-import data.PointsService;
-import jakarta.enterprise.context.SessionScoped;
-import jakarta.inject.Inject;
 
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import jakarta.inject.Named;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
 
-
-//Тут уже пошли аннотации для JSF
-//Почему Bean и просто Point разные классы?
-//Один Entity для Hibernate, а другой Bean для JSF, и смешивать их вроде как нельзя
-@Named
-@SessionScoped
 public class PointBean implements Serializable {
 
-    @DecimalMin(value = "-5.0", message = "X не может быть меньше -3")
-    @DecimalMax(value = "3.0", message = "X не может быть больше 5")
-    private BigDecimal x;
-
-    @DecimalMin(value = "-3.0", message = "Y не может быть меньше -3")
-    @DecimalMax(value = "5.0", message = "Y не может быть больше 5")
-    private BigDecimal y;
-
-    @DecimalMin(value = "0", message = "R не может быть меньше 0")
-    @DecimalMax(value = "4", message = "Y не может быть больше 5")
+    @DecimalMin(value = "0.5", message = "R не может быть пустым")
+    @DecimalMax(value = "4", message = "R не может быть больше 4")
     private double r;
-
-    private boolean isHit;
-
-    @DecimalMin(value = "0", message = "Время не может быть меньше 0")
-    private long execTime;
-
-    @Inject
-    PointsService pointsService;
-
-    private int id;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public BigDecimal getX() {
-        return x;
-    }
-
-
-    public void setX(BigDecimal x) {
-        this.x = x;
-        System.out.println("X settd = " + this.x);
-    }
-
-    public BigDecimal getY() {
-        return y;
-    }
-
-
-    public void setY(BigDecimal y){
-
-        this.y = y;
-        System.out.println("Y settd = " + this.y);
-    }
 
     public double getR(){
         return r;
     }
 
-
     public void setR(double r){
         this.r = r;
-    }
-
-    public boolean getIsHit(){
-        return isHit;
-    }
-
-    public void setIsHit(boolean isHit){
-        this.isHit = isHit;
-    }
-
-    public long getExecTime(){
-        return execTime;
-    }
-
-    public void setExecTime(long execTime){
-        this.execTime = execTime;
-    }
-
-    public void save(){
-
-        Point point = new Point();
-        point.setX(x);
-        point.setY(y);
-        point.setR(r);
-        point.setHit(isHit); // Вычисляем попадание
-        point.setExecTime(execTime);
-
-        pointsService.savePoint(point);
-
-    }
-
-    public String getDisplayX() {
-        return x != null ? "X = " + x : "X";
-    }
-
-    public String getDisplayY() {
-        return y != null ? "Y = " + y : "Y";
+        System.out.println("R setted = " + this.r);
     }
 
     public String getDisplayR() {
-        return r == 0 ? "R = " + r : "R";
+        return r != 0 ? "R = " + r : "R";
+    }
+    public double getDoubleR(){
+        return r*2;
+    }
+
+    public void setDoubleR(double r){
+        this.r = r/2;
+        System.out.println("R setted = " + this.r);
     }
 
 }

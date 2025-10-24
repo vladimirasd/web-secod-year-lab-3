@@ -1,46 +1,67 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<faces-config version="4.0" xmlns="https://jakarta.ee/xml/ns/jakartaee"
+<faces-config version="2.3" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
-                                  https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_4_0.xsd" >
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                                  http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd">
+
     <navigation-rule>
         <from-view-id>/start.xhtml</from-view-id>
         <navigation-case>
-            <from-outcome>goToMainPage</from-outcome>
+            <from-outcome>main</from-outcome>
             <to-view-id>/main.xhtml</to-view-id>
-            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+
+    <navigation-rule>
+        <from-view-id>/main.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>start</from-outcome>
+            <to-view-id>/start.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
     <managed-bean>
+
         <managed-bean-name>pointBean</managed-bean-name>
-        <managed-bean-class>data.beans.PointBean</managed-bean-class>
+        <managed-bean-class>data.beans.FormPointBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+
+    </managed-bean>
+
+    <managed-bean>
+
+        <managed-bean-name>formPointBean</managed-bean-name>
+        <managed-bean-class>data.beans.FormPointBean</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
 
         <managed-property>
-            <property-name>x</property-name>
-            <value>-5.0</value>
+            <property-name>pointsService</property-name>
+            <value>#{pointsService}</value>
         </managed-property>
 
-        <managed-property>
-            <property-name>y</property-name>
-            <value>-3.0</value>
-        </managed-property>
-
-        <managed-property>
-            <property-name>r</property-name>
-            <value>2.0</value>
-        </managed-property>
-
-        <managed-property>
-            <property-name>isHit</property-name>
-            <value>false</value>
-        </managed-property>
-
-        <managed-property>
-            <property-name>execTime</property-name>
-            <value>0</value>
-        </managed-property>
     </managed-bean>
+
+    <managed-bean>
+
+        <managed-bean-name>areaPointBean</managed-bean-name>
+        <managed-bean-class>data.beans.AreaPointBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+
+        <managed-property>
+            <property-name>pointsService</property-name>
+            <value>#{pointsService}</value>
+        </managed-property>
+
+    </managed-bean>
+
+    <managed-bean>
+
+        <managed-bean-name>pointsService</managed-bean-name>
+        <managed-bean-class>data.PointsService</managed-bean-class>
+        <managed-bean-scope>application</managed-bean-scope>
+
+    </managed-bean>
+
 
 </faces-config>

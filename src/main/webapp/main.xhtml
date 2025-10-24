@@ -2,12 +2,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ace="http://www.icesoft.org/icefaces/components">
+      xmlns:ace="http://www.icefaces.org/icefaces/components"
+      xmlns:p="http://primefaces.org/ui">
 <h:head>
 
     <title>Стартовая страница</title>
     <meta charset="UTF-8"/>
     <h:outputStylesheet name="css/style.css"/>
+    <h:outputScript library="js" name="script.js" />
+
 
 </h:head>
 <h:body>
@@ -15,17 +18,24 @@
 
         <header>
             <p>Деревянко Владимир</p>
-            <p>Лабораторная 2</p>
-            <p>Вариант 45682</p>
+            <p>Лабораторная 3</p>
+            <p>Вариант 4573</p>
         </header>
 
-        <div id="main-error-handler" style="display: none">
-            <label id="globalError" >Пожалуйста, выберите значение R</label>
-        </div>
-
-
         <!-- Рисунок  -->
-        <div id="canvas-handler">
+        <div class="canvas-handler" id="canvas-handler">
+            <h:form id="canvasForm">
+                <h:inputHidden id = "xAreaInput" value="#{areaPointBean.x}" />
+                <h:inputHidden id = "yAreaInput" value="#{areaPointBean.y}" />
+                <h:inputHidden id = "rAreaInput" value="#{areaPointBean.r}" />
+                <h:inputHidden id = "allPoints" value="#{pointsService.pointsAsJson}" readonly="true" />
+                <h:message id="rAreaMessage" for="rAreaInput" styleClass="error"/>
+                <h:commandButton id="canvasSubmit" style="display: none;"
+                                 action="#{areaPointBean.save}">
+                    <ace:ajax execute="xAreaInput yAreaInput rAreaInput allPoints"
+                              render="allPoints rAreaMessage xAreaInput yAreaInput rAreaInput resultTable"/>
+                </h:commandButton>
+            </h:form>
             <canvas id="area" width="800" height="800"></canvas>
         </div>
 
@@ -35,75 +45,77 @@
 
             <!-- X  -->
             <fieldset>
-                <legend >
-                    <h:outputText id="legendX" value="#{pointBean.displayX}" />
+                <legend>
+                    <h:outputText id="legendX" value="#{formPointBean.displayX}" />
                 </legend>
                 <div class="button-row">
-                    <h:commandButton styleClass="y-button" value="-5" action="#{pointBean.setX(-5)}">
-                        <f:ajax execute="@this" render="legendX" />
-                    </h:commandButton>
-                    <h:commandButton styleClass="y-button" value="-4" action="#{pointBean.setX(-4)}" >
-                        <f:ajax execute="@this" render="legendX" />
-                    </h:commandButton>
-                    <h:commandButton styleClass="y-button" value="-3" action="#{pointBean.setX(-3)}" >
-                        <f:ajax execute="@this" render="legendX" />
-                    </h:commandButton>
-                    <h:commandButton styleClass="y-button" value="-2" action="#{pointBean.setX(-2)}" >
-                        <f:ajax execute="@this" render="legendX" />
-                    </h:commandButton>
-                    <h:commandButton styleClass="y-button" value="-1" action="#{pointBean.setX(-1)}" >
-                        <f:ajax execute="@this" render="legendX" />
-                    </h:commandButton>
-                    <h:commandButton styleClass="y-button" value="0" action="#{pointBean.setX(0)}" >
-                        <f:ajax execute="@this" render="legendX" />
-                    </h:commandButton>
-                    <h:commandButton styleClass="y-button" value="1" action="#{pointBean.setX(1)}" >
-                        <f:ajax execute="@this" render="legendX" />
-                    </h:commandButton>
-                    <h:commandButton styleClass="y-button" value="2" action="#{pointBean.setX(2)}" >
-                        <f:ajax execute="@this" render="legendX" />
-                    </h:commandButton>
-                    <h:commandButton styleClass="y-button" value="3" action="#{pointBean.setX(3)}">
-                        <f:ajax execute="@this" render="legendX" />
-                    </h:commandButton>
+                    <h:selectOneRadio id="xRadio"
+                                      value="#{formPointBean.x}"
+                                      layout="lineDirection"
+                                      styleClass="radio-group">
+                        <f:selectItem itemValue="-5" itemLabel="-5" />
+                        <f:selectItem itemValue="-4" itemLabel="-4" />
+                        <f:selectItem itemValue="-3" itemLabel="-3" />
+                        <f:selectItem itemValue="-2" itemLabel="-2" />
+                        <f:selectItem itemValue="-1" itemLabel="-1" />
+                        <f:selectItem itemValue="0" itemLabel="0" />
+                        <f:selectItem itemValue="1" itemLabel="1" />
+                        <f:selectItem itemValue="2" itemLabel="2" />
+                        <f:selectItem itemValue="3" itemLabel="3" />
+                        <ace:ajax event="change" execute="@this" render="legendX xInput" />
+                    </h:selectOneRadio>
                 </div>
+                <h:inputHidden id="xInput" value="#{formPointBean.x}" />
+                <h:message id="xMessage" for="xInput" styleClass="error"/>
             </fieldset>
 
             <!-- Y  -->
             <fieldset id="y-fieldSet">
                 <legend>
-                    <h:outputText id="legendY" value="#{pointBean.displayY}" />
+                    <h:outputText id="legendY" value="#{formPointBean.displayY}" />
                 </legend>
                 <h:inputText id="yInput"
                              styleClass="y-input #{component.valid ? '' : 'error-field'}"
                              placeholder="Введите число от -3 до 5"
-                             value="#{pointBean.y}">
-                    <f:ajax event="valueChange" execute="@this" render="yMessage legendY" />
+                             value="#{formPointBean.y}">
+                    <f:converter converterId="BigDecimalConverter" />
+                    <ace:ajax event="valueChange" execute="@this" render="yMessage legendY" />
                 </h:inputText>
                 <h:message id="yMessage" for="yInput" styleClass="error"/>
             </fieldset>
-            <!-- R  -->
 
+            <!-- R  -->
             <fieldset>
                 <legend>
-                    <h:outputText id="legendR" value="#{pointBean.displayR}" />
+                    <h:outputText id="legendR" value="#{formPointBean.displayR}" />
                 </legend>
 
-                <ace:sliderEntry value="#{pointBean.r}" min="10"  max="60">
+                <ace:sliderEntry id="decimalSlider"
+                                 min="2"
+                                 max="8"
+                                 value="#{formPointBean.doubleR}">
+                    <ace:ajax event="slide" execute="@this" render="legendR hiddenR rInput"  />
                 </ace:sliderEntry>
+                <h:inputHidden id = "rInput" value="#{formPointBean.r}" />
+                <h:message id="rMessage" for="rInput" styleClass="error"/>
             </fieldset>
+
+            <!-- скрытое поле для R -->
+            <h:inputHidden id = "hiddenR" value="#{formPointBean.r}" />
 
 
             <!-- Путка -->
-            <h:commandButton  styleClass="main-submit" value="Проверить" action="#{pointBean.submit}">
-                <f:ajax execute="data-form" render="resultsTable" />
+            <h:commandButton styleClass="main-submit" value="Проверить" action="#{formPointBean.save}">
+                <ace:ajax execute="allPoints data-form" render="allPoints resultTable rMessage yMessage xMessage" />
             </h:commandButton>
 
         </h:form>
 
+
+
         <!-- Табличка для резов -->
         <div id="resultsContainer">
-        <h3>Results</h3>
+            <h3>Results</h3>
             <h:dataTable value="#{pointsService.points}" var="point"
                          styleClass="result-table"
                          id="resultTable">
@@ -138,11 +150,9 @@
 
     </div>
 
-    <h:outputScript library="js" name="script.js" />
+    <h:button value="К стартовой странице" outcome="start" styleClass="main-submit" />
 
 </h:body>
-
-
 
 
 </html>

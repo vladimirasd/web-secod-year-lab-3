@@ -108,6 +108,8 @@ function drawCoordinateSystem() {
 
 function drawPoints(){
 
+    const globalR = document.getElementById("data-form:hiddenR").value;
+
     const canvas = document.getElementById("area");
     const rect = canvas.getBoundingClientRect();
     const ctx = canvas.getContext("2d");
@@ -117,13 +119,16 @@ function drawPoints(){
     const centerX = canvas.width/2;
     const centerY = canvas.height/2;
 
-    const savedPoints = getCookie("points").forEach( point => {
+    var rawPoints= document.getElementById("canvasForm:allPoints").value;
+    var points = JSON.parse(rawPoints);
+
+    points.forEach( point => {
 
         const posX = parseFloat(point.x);
         const posY = parseFloat(point.y);
         const r = parseFloat(point.r);
 
-        if(point.res == "hit" && r <= globalR){
+        if(point.isHit == true && r <= globalR){
 
             ctx.fillStyle = '#0ff';
             ctx.beginPath();
@@ -131,7 +136,7 @@ function drawPoints(){
             ctx.fill();
 
         }
-        if(point.res == "miss" && r >= globalR){
+        if(point.isHit == false && r >= globalR){
 
             ctx.fillStyle = '#f00';
             ctx.beginPath();
@@ -151,8 +156,8 @@ function drawPoints(){
 
 function drawArea(){
 
-    const r = globalR;
-
+    const r = document.getElementById("data-form:hiddenR").value;
+    console.log(r);
     const canvas = document.getElementById("area");
     const ctx = canvas.getContext('2d');
     const width = canvas.width;
@@ -165,11 +170,11 @@ function drawArea(){
     const centerY = height / 2;
 
 
-    //3 четверть
+    //4 четверть
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.lineTo(centerX - 50 * r, centerY);
-    ctx.lineTo(centerX, centerY + 50 * r);
+    ctx.lineTo(centerX, centerY - 50 * r);
     ctx.closePath();
     ctx.fill();
 
@@ -177,11 +182,11 @@ function drawArea(){
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.lineTo(centerX + 25 * r, centerY);
-    ctx.lineTo(centerX, centerY + 25 * r);
+    ctx.lineTo(centerX, centerY - 25 * r);
     ctx.closePath();
     ctx.fill();
     ctx.beginPath();
-    ctx.arc(centerX, centerY, 25*r, 0, Math.PI/2);
+    ctx.arc(centerX, centerY, 25*r, 3*Math.PI/2, 2*Math.PI);
     ctx.closePath();
     ctx.fill();
 
@@ -189,8 +194,8 @@ function drawArea(){
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.lineTo(centerX + 25 * r, centerY);
-    ctx.lineTo(centerX + 25 * r, centerY - 50 * r);
-    ctx.lineTo(centerX, centerY - 50 * r);
+    ctx.lineTo(centerX + 25 * r, centerY + 50 * r);
+    ctx.lineTo(centerX, centerY + 50 * r);
     ctx.closePath();
     ctx.fill();
 
@@ -198,5 +203,61 @@ function drawArea(){
 }
 
 
-drawBasics();
-drawCoordinateSystem();
+function drawAll(){
+    drawBasics();
+    drawArea();
+    drawCoordinateSystem();
+    drawPoints();
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const targetElement = document.getElementById('data-form:hiddenR');
+
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
+                console.log('Value изменен, вызываем drawAll()');
+                drawAll();
+            }
+        });
+    });
+
+    observer.observe(targetElement, {
+        attributes: true,
+        attributeFilter: ['value']
+    });
+    drawAll();
+    document.getElementById("area").addEventListener("click", function(e){
+
+        const canvas = document.getElementById("area");
+        const rect = canvas.getBoundingClientRect();
+
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const centerX = canvas.width/2;
+        const centerY = canvas.height/2;
+
+        const posX = ((e.clientX - rect.left)*scaleX - centerX)/50;
+        const posY = -((e.clientY - rect.top)*scaleY - centerY)/50;
+
+        document.getElementById("canvasForm:xAreaInput").value = posX;
+        document.getElementById("canvasForm:yAreaInput").value = posY;
+        document.getElementById("canvasForm:rAreaInput").value = document.getElementById("data-form:hiddenR").value;;
+        document.getElementById('canvasForm:canvasSubmit').click();
+        setTimeout(drawAll, 400);
+    });
+});
+
+$(document).ajaxError(function(event, xhr, settings, error) {
+    if (xhr.status === 401 || xhr.status === 403) {
+        window.location.href = '/start.xhtml';
+    }
+});
+
+jsf.ajax.addOnError(function(data) {
+    if (data.status === 'sessionExpired') {
+        window.location.href = '/start.xhtml';
+    }
+});
+

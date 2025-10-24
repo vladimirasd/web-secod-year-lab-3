@@ -1,16 +1,18 @@
 package data;
 
+import com.google.gson.Gson;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Named;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.util.List;
+
 
 @Named
 @ApplicationScoped
-@Transactional
 public class PointsService {
 
 
@@ -23,6 +25,8 @@ public class PointsService {
      * но в интернетах сказали, что так делать нельзя и лучше все хранить сразу в БД :(
      * Ну хоть ответственности разделю этим классом.
      */
+
+    private static final Gson GSON = new Gson();
 
     public List<Point> getPoints(){
 
@@ -42,7 +46,24 @@ public class PointsService {
         return points;
          */
 
-        return entityManager.createQuery("SELECT p FROM Point p", Point.class).getResultList();
+
+
+        List<Point> resultList = entityManager
+                                .createQuery("SELECT p FROM Point p ORDER BY p.id DESC", Point.class)
+                                .setMaxResults(20)
+                                .getResultList();
+
+        return resultList;
+    }
+
+    public String getPointsAsJson(){
+
+        List<Point> resultList = entityManager
+                .createQuery("SELECT p FROM Point p ORDER BY p.id DESC", Point.class)
+                .setMaxResults(20)
+                .getResultList();
+
+        return GSON.toJson(resultList);
 
     }
 
@@ -67,6 +88,7 @@ public class PointsService {
 
         }
          */
+
 
         entityManager.persist(point);
 
