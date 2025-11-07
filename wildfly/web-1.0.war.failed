@@ -1,0 +1,7 @@
+{
+    "WFLYCTL0412: Required services that are not installed:" => ["jboss.naming.context.java.PostgresDS"],
+    "WFLYCTL0180: Services with missing/unavailable dependencies" => [
+        "jboss.persistenceunit.\"web-1.0.war#myPersistenceUnit\".__FIRST_PHASE__ is missing [jboss.naming.context.java.PostgresDS]",
+        "jboss.persistenceunit.\"web-1.0.war#myPersistenceUnit\" is missing [jboss.naming.context.java.PostgresDS]"
+    ]
+}

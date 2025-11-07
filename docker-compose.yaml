@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres:13
+    container_name: wildfly-postgres
+    environment:
+      POSTGRES_DB: postgresdb
+      POSTGRES_USER: vladimirasd
+      POSTGRES_PASSWORD: asdwsxasd123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  wildfly:
+    image: quay.io/wildfly/wildfly:26.1.3.Final-jdk11
+    container_name: wildfly-26-server
+    environment:
+      - JAVA_OPTS=-Xms512m -Xmx1024m -Djava.net.preferIPv4Stack=true
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+      - "8787:8787"
+    volumes:
+      - ./wildfly:/opt/jboss/wildfly/standalone/deployments
+    command: >
+      sh -c "
+        /opt/jboss/wildfly/bin/add-user.sh -u vladimirasd -p asdwsxasd123 --silent &&
+        /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0
+      "
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge

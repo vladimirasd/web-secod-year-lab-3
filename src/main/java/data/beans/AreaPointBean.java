@@ -2,14 +2,10 @@ package data.beans;
 import data.Point;
 import data.PointsService;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 
@@ -147,5 +143,9 @@ public class AreaPointBean extends PointBean {
 
     }
 
+
+    public void restoreValues() {
+        System.out.println("Values restored from localStorage");
+    }
 
 }

@@ -212,12 +212,14 @@ function drawAll(){
 
 
 document.addEventListener('DOMContentLoaded', function() {
+
+    restoreSession();
+
     const targetElement = document.getElementById('data-form:hiddenR');
 
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
-                console.log('Value изменен, вызываем drawAll()');
                 drawAll();
             }
         });
@@ -227,6 +229,38 @@ document.addEventListener('DOMContentLoaded', function() {
         attributes: true,
         attributeFilter: ['value']
     });
+
+    const beanObserver = new MutationObserver(function(mutations){
+            mutations.forEach(function(mutation) {
+
+                const target = mutation.target;
+
+                if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
+                        const id = target.id;
+                        const newValue = target.value;
+                        localStorage.setItem(id, newValue);
+                }
+
+            });
+    });
+
+    const targetX = document.getElementById('data-form:xInput');
+    const targetY = document.getElementById('data-form:yInputHidden');
+    const targetR = document.getElementById('data-form:decimalSlider_hidden');
+
+    beanObserver.observe(targetX, {
+        attributes: true,
+        attributeFilter: ['value']
+    });
+    beanObserver.observe(targetY, {
+        attributes: true,
+        attributeFilter: ['value']
+    });
+    beanObserver.observe(targetR, {
+        attributes: true,
+        attributeFilter: ['value']
+    });
+
     drawAll();
     document.getElementById("area").addEventListener("click", function(e){
 
@@ -249,15 +283,41 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-$(document).ajaxError(function(event, xhr, settings, error) {
-    if (xhr.status === 401 || xhr.status === 403) {
-        window.location.href = '/start.xhtml';
-    }
-});
 
-jsf.ajax.addOnError(function(data) {
-    if (data.status === 'sessionExpired') {
-        window.location.href = '/start.xhtml';
+function restoreSession(){
+
+    const prefX = localStorage.getItem("data-form:xInput");
+    const prefY = localStorage.getItem("data-form:yInputHidden")
+    const prefR =  localStorage.getItem("data-form:decimalSlider_hidden");
+
+    const curX = document.getElementById('data-form:xInput').value;
+    const curY = document.getElementById('data-form:yInputHidden').value;
+    const curR = document.getElementById('data-form:rInput').value;
+
+    if(prefX && !curX){
+        document.getElementById('data-form:xInput').value = prefX;
+        jsf.ajax.request('data-form:restoreSubmit', null, {
+            execute: 'data-form:xInput',
+            render: 'data-form:legendX data-form:xInput data-form:xRadio',
+        });
     }
-});
+    if(prefY && !curY){
+        document.getElementById('data-form:yInputHidden').value = prefY;
+        jsf.ajax.request('data-form:restoreSubmit', null, {
+            execute: 'data-form:yInputHidden',
+            render: 'data-form:legendY data-form:yInput',
+        });
+    }
+
+    if(prefR && curR == 0){
+       document.getElementById('data-form:rInput').value = parseFloat(prefR);
+       jsf.ajax.request('data-form:restoreSubmit', null, {
+           execute: 'data-form:rInput',
+           render: 'data-form:decimalSlider data-form:legendR data-form:hiddenR',
+       });
+    }
+
+}
+
+
 

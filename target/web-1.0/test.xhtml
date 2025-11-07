@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ace="http://www.icefaces.org/icefaces/components">
+
+<h:head>
+    <title>Slider с дробными значениями</title>
+    <script type="text/javascript">
+        function updateDecimalValue(sliderId, displayId, factor) {
+            var slider = document.getElementById(sliderId);
+            var display = document.getElementById(displayId);
+            var value = parseInt(slider.value) / factor;
+            display.innerHTML = value.toFixed(2);
+        }
+    </script>
+</h:head>
+
+<h:body>
+    <h:form>
+        <h3>Slider с дробным шагом 0.01</h3>
+
+        <!-- Слайдер от 0 до 100 (фактически 0.00 до 1.00) -->
+        <ace:sliderEntry id="decimalSlider"
+                         minValue="0"
+                         maxValue="100"
+                         value="#{sliderBean.sliderValue}"
+                         onchange="updateDecimalValue('decimalSlider', 'decimalValue', 100)">
+        </ace:sliderEntry>
+
+        <br/>
+        <h:outputText id="decimalValue"
+                      value="#{sliderBean.decimalValue}" />
+        <h:outputText value=" (фактическое значение: #{sliderBean.sliderValue / 100})" />
+
+        <br/><br/>
+        <h:commandButton value="Сохранить" action="#{sliderBean.saveValue}" />
+    </h:form>
+</h:body>
+</html>

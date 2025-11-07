@@ -3,7 +3,6 @@ package data;
 import com.google.gson.Gson;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -67,6 +66,8 @@ public class PointsService {
 
     }
 
+
+    @Transactional
     public void savePoint(Point point){
 
         /*
@@ -91,6 +92,7 @@ public class PointsService {
 
 
         entityManager.persist(point);
+        entityManager.flush();
 
     }
 

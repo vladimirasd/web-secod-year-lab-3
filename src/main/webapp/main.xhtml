@@ -79,8 +79,9 @@
                              placeholder="Введите число от -3 до 5"
                              value="#{formPointBean.y}">
                     <f:converter converterId="BigDecimalConverter" />
-                    <ace:ajax event="valueChange" execute="@this" render="yMessage legendY" />
+                    <ace:ajax event="valueChange" execute="@this" render="yMessage legendY yInputHidden" />
                 </h:inputText>
+                <h:inputHidden id="yInputHidden" value="#{formPointBean.y}" />
                 <h:message id="yMessage" for="yInput" styleClass="error"/>
             </fieldset>
 
@@ -96,7 +97,7 @@
                                  value="#{formPointBean.doubleR}">
                     <ace:ajax event="slide" execute="@this" render="legendR hiddenR rInput"  />
                 </ace:sliderEntry>
-                <h:inputHidden id = "rInput" value="#{formPointBean.r}" />
+                <h:inputHidden id = "rInput" value="#{formPointBean.doubleR}" />
                 <h:message id="rMessage" for="rInput" styleClass="error"/>
             </fieldset>
 
@@ -107,6 +108,11 @@
             <!-- Путка -->
             <h:commandButton styleClass="main-submit" value="Проверить" action="#{formPointBean.save}">
                 <ace:ajax execute="allPoints data-form" render="allPoints resultTable rMessage yMessage xMessage" />
+            </h:commandButton>
+
+            <!-- Тайная путка -->
+            <h:commandButton id="restoreSubmit"
+                             action="#{formPointBean.restoreValues}">
             </h:commandButton>
 
         </h:form>

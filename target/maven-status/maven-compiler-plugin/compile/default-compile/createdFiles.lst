@@ -1,0 +1,8 @@
+data\beans\AreaPointBean.class
+BigDecimalConvertor.class
+data\beans\ClockBean.class
+data\beans\FormPointBean.class
+data\beans\PointBean.class
+data\Point.class
+SessionExpiredFilter.class
+data\PointsService.class
